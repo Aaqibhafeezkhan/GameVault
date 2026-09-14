@@ -83,7 +83,7 @@ export default function GameShell({ title, children }) {
               ↺
             </SIconBtn>
             <SBackBtn as={Link} to="/">
-              ⬅ Home
+              ← Games
             </SBackBtn>
           </SControls>
         </STopBar>
@@ -91,6 +91,7 @@ export default function GameShell({ title, children }) {
         {gameOver && (
           <SModalOverlay>
             <SModal>
+              <SModalEyebrow>ROUND COMPLETE</SModalEyebrow>
               <SModalTitle>Game Over</SModalTitle>
               <SModalScore>{score}</SModalScore>
               <SModalLabel>SCORE</SModalLabel>
@@ -99,7 +100,7 @@ export default function GameShell({ title, children }) {
               <SModalActions>
                 <SModalBtn onClick={handleRestart}>Play Again</SModalBtn>
                 <SModalBtn as={Link} to="/" $secondary>
-                  Home
+                  Games
                 </SModalBtn>
               </SModalActions>
             </SModal>
@@ -107,7 +108,10 @@ export default function GameShell({ title, children }) {
         )}
         {paused && !gameOver && (
           <SPausedOverlay onClick={() => setPaused(false)}>
-            <SPausedText>PAUSED — click to resume</SPausedText>
+            <SPausedCard>
+              <SPausedTitle>Paused</SPausedTitle>
+              <SPausedText>Click anywhere to continue</SPausedText>
+            </SPausedCard>
           </SPausedOverlay>
         )}
       </SShell>
@@ -118,17 +122,21 @@ export default function GameShell({ title, children }) {
 const SShell = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 64px);
 `;
 
 const STopBar = styled.div`
-  background: ${theme.colors.surface};
+  background: rgba(255, 255, 255, 0.94);
   border-bottom: 1px solid ${theme.colors.border};
-  padding: ${theme.space[2]}px ${theme.space[4]}px;
+  box-shadow: 0 2px 12px rgba(35, 42, 68, 0.04);
+  padding: ${theme.space[3]}px ${theme.space[4]}px;
   display: flex;
   align-items: center;
   gap: ${theme.space[4]}px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 64px;
+  z-index: 50;
 `;
 
 const SGameTitle = styled.h1`
@@ -142,17 +150,19 @@ const SGameTitle = styled.h1`
 const SMetaRow = styled.div`
   display: flex;
   gap: ${theme.space[4]}px;
+  padding: 0 ${theme.space[3]}px;
 `;
 
 const SMetaItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 48px;
 `;
 
 const SMetaLabel = styled.span`
   font-family: ${theme.font.mono};
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   color: ${theme.colors.textMuted};
   letter-spacing: 0.08em;
 `;
@@ -160,7 +170,7 @@ const SMetaLabel = styled.span`
 const SMetaValue = styled.span`
   font-family: ${theme.font.mono};
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: ${theme.colors.accent};
 `;
 
@@ -171,22 +181,22 @@ const SControls = styled.div`
 `;
 
 const SIconBtn = styled.button`
-  background: transparent;
+  background: ${theme.colors.bg};
   border: 1px solid ${theme.colors.border};
   color: ${theme.colors.textMuted};
   border-radius: ${theme.radius.sm};
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.85rem;
-  transition:
-    border-color 150ms ease-out,
-    color 150ms ease-out;
+  transition: transform 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, background 150ms ease-out;
   &:hover:not(:disabled) {
+    transform: translateY(-1px);
     border-color: ${theme.colors.accent};
     color: ${theme.colors.accent};
+    background: ${theme.colors.surface};
   }
   &:disabled {
     opacity: 0.4;
@@ -195,24 +205,24 @@ const SIconBtn = styled.button`
 `;
 
 const SBackBtn = styled.button`
-  background: transparent;
+  background: ${theme.colors.bg};
   border: 1px solid ${theme.colors.border};
   color: ${theme.colors.textMuted};
   border-radius: ${theme.radius.sm};
-  padding: 0 ${theme.space[2]}px;
-  height: 32px;
+  padding: 0 ${theme.space[3]}px;
+  height: 36px;
   font-family: ${theme.font.mono};
-  font-size: 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: ${theme.space[1]}px;
-  transition:
-    border-color 150ms ease-out,
-    color 150ms ease-out;
+  transition: border-color 150ms ease-out, color 150ms ease-out, background 150ms ease-out;
   text-decoration: none;
   &:hover {
     border-color: ${theme.colors.accent};
     color: ${theme.colors.accent};
+    background: ${theme.colors.surface};
   }
 `;
 
@@ -222,99 +232,113 @@ const SContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${theme.space[4]}px;
+  padding: clamp(16px, 3vw, 40px);
 `;
 
 const SModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(10, 10, 15, 0.85);
+  background: rgba(28, 32, 49, 0.48);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: ${theme.space[4]}px;
   z-index: ${MODAL_OVERLAY_Z};
 `;
 
 const SModal = styled.div`
   background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.radius.sm};
+  border-radius: ${theme.radius.lg};
   padding: ${theme.space[6]}px;
-  min-width: 280px;
+  min-width: min(340px, 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: ${theme.space[2]}px;
+  box-shadow: ${theme.shadows.floating};
+`;
+
+const SModalEyebrow = styled.div`
+  font-family: ${theme.font.mono};
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: ${theme.colors.accent};
+  letter-spacing: 0.14em;
 `;
 
 const SModalTitle = styled.h2`
   font-family: ${theme.font.display};
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: ${theme.colors.text};
 `;
 
 const SModalScore = styled.div`
   font-family: ${theme.font.mono};
-  font-size: 3rem;
-  font-weight: 600;
+  font-size: 3.4rem;
+  font-weight: 700;
   color: ${theme.colors.accent};
   line-height: 1;
+  margin-top: ${theme.space[2]}px;
 `;
 
 const SModalLabel = styled.div`
   font-family: ${theme.font.mono};
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: ${theme.colors.textMuted};
   letter-spacing: 0.1em;
 `;
 
 const SNewBest = styled.div`
   font-family: ${theme.font.mono};
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
   color: ${theme.colors.success};
   letter-spacing: 0.1em;
 `;
 
 const SModalBest = styled.div`
   font-family: ${theme.font.mono};
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   color: ${theme.colors.textMuted};
 `;
 
 const SModalActions = styled.div`
   display: flex;
   gap: ${theme.space[2]}px;
-  margin-top: ${theme.space[2]}px;
+  margin-top: ${theme.space[3]}px;
 `;
 
 const SModalBtn = styled.button`
-  background: transparent;
+  background: ${(props) =>
+    props.$secondary ? theme.colors.bg : theme.colors.accent};
   border: 1px solid
     ${(props) => (props.$secondary ? theme.colors.border : theme.colors.accent)};
   color: ${(props) =>
-    props.$secondary ? theme.colors.textMuted : theme.colors.accent};
+    props.$secondary ? theme.colors.textMuted : "#fff"};
   border-radius: ${theme.radius.sm};
   padding: ${theme.space[2]}px ${theme.space[4]}px;
   font-family: ${theme.font.mono};
-  font-size: 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  transition:
-    background 150ms ease-out,
-    color 150ms ease-out;
+  transition: transform 150ms ease-out, background 150ms ease-out;
   &:hover {
+    transform: translateY(-1px);
     background: ${(props) =>
-      props.$secondary ? theme.colors.surfaceAlt : theme.colors.accent};
-    color: ${(props) => (props.$secondary ? theme.colors.text : "#fff")};
+      props.$secondary ? theme.colors.surfaceAlt : "#5749c2"};
   }
 `;
 
 const SPausedOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(10, 10, 15, 0.7);
+  background: rgba(28, 32, 49, 0.34);
+  backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -322,9 +346,24 @@ const SPausedOverlay = styled.div`
   cursor: pointer;
 `;
 
+const SPausedCard = styled.div`
+  background: ${theme.colors.surface};
+  border: 1px solid ${theme.colors.border};
+  border-radius: ${theme.radius.lg};
+  padding: ${theme.space[5]}px ${theme.space[6]}px;
+  box-shadow: ${theme.shadows.floating};
+  text-align: center;
+`;
+
+const SPausedTitle = styled.div`
+  font-family: ${theme.font.display};
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: ${theme.colors.text};
+`;
+
 const SPausedText = styled.div`
-  font-family: ${theme.font.mono};
-  font-size: 1.2rem;
+  margin-top: ${theme.space[1]}px;
+  font-size: 0.8rem;
   color: ${theme.colors.textMuted};
-  letter-spacing: 0.05em;
 `;

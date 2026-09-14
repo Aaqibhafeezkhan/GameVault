@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: ${(p) => p.theme.colors.bg};
+    background: ${(p) => p.theme.colors.bg};
     color: ${(p) => p.theme.colors.text};
     font-family: ${(p) => p.theme.font.body};
     min-height: 100vh;
@@ -22,22 +22,15 @@ const GlobalStyle = createGlobalStyle`
     position: relative;
   }
 
-  body::after {
+  body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     pointer-events: none;
-    z-index: 9999;
-    background-image: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.015) 2px,
-      rgba(255, 255, 255, 0.015) 4px
-    );
+    z-index: -1;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(101, 88, 211, 0.08), transparent 32%),
+      radial-gradient(circle at 90% 15%, rgba(223, 95, 121, 0.06), transparent 28%);
   }
 
   #root {
@@ -66,9 +59,14 @@ const GlobalStyle = createGlobalStyle`
     display: block;
   }
 
+  :focus-visible {
+    outline: 3px solid rgba(101, 88, 211, 0.35);
+    outline-offset: 2px;
+  }
+
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -77,7 +75,7 @@ const GlobalStyle = createGlobalStyle`
 
   ::-webkit-scrollbar-thumb {
     background: ${(p) => p.theme.colors.border};
-    border-radius: 3px;
+    border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -85,7 +83,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background: ${(p) => p.theme.colors.accent};
+    background: rgba(101, 88, 211, 0.18);
     color: ${(p) => p.theme.colors.text};
   }
 `;
