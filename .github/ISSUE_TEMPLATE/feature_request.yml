@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest a game, improvement, or new capability
+title: "enhancement: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem should this solve?
+      description: Explain the use case or limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to see?
+      description: Describe the behavior or feature you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches that might work?
+    validations:
+      required: false
