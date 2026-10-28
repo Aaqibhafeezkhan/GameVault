@@ -1,43 +1,58 @@
 # GameVault
 
-A comprehensive collection of 50+ classic arcade, strategy, puzzle, and word games fully mapped and built as a single-page React application without placeholders, TypeScript, or external game engines.
+A browser arcade featuring classic arcade, strategy, puzzle, and word games, built as a single-page React application.
 
 ## Overview
 
-This project serves as an offline-capable browser arcade. Rather than routing to external engines, every game's logic, collision detection, procedural generation, and UI is written purely in ES2022 JavaScript and React hooks intuitively built from scratch.
-
-All 54 minigames are dynamically chunked through React Suspense, meaning you download exactly what you need to play when you need it. High scores and persistent states automatically run off the unified internal namespace using LocalStorage wrappers. 
+GameVault brings its game logic and interfaces together in one React application. Games are loaded through React's lazy-loading support, and high scores or saved state use browser local storage where supported.
 
 ## Features
 
-* **54 Playable Minigames:** Ranging from memory challenges and typing speed tests to classic physics and word searches. Notable titles include Snake, Tetris, Asteroids, Minesweeper, Game 2048, and Checkers. 
-* **Self-Contained Components:** Each game controls its own specific tick-rate loops via RequestAnimationFrame hooks, ensuring minimal main-thread blocking.
-* **Unified UI Shell:** A persistent wrapper handles overarching routing, pause capabilities, volume, and score history. 
-* **Zero Configuration Routing:** Utilizing a structural hash router ensures immediate interoperability with most simple CDN caching layers like GitHub Pages.
+- **54 playable minigames** across arcade, puzzle, card, word, reflex, and strategy categories.
+- **Self-contained game components** built with JavaScript and React.
+- **Shared arcade interface** for navigation, pause controls, and score history.
+- **Browser-based play** without requiring a separate game engine.
 
-## Tech Stack
+## Tech stack
 
-* React 18
-* Vite
-* Styled-Components (v6)
-* React-Router-DOM 
+- React 18
+- Vite
+- Styled-components
+- React Router DOM
 
 ## Development
 
-To spin up GameVault locally:
+Requirements: a current LTS version of Node.js and npm.
 
-1. Clone the repository.
-2. Run `npm install`
-3. Run `npm run dev` to launch the arcade locally.
+```bash
+git clone https://github.com/Aaqibhafeezkhan/GameVault.git
+cd GameVault
+npm ci
+npm run dev
+```
 
-If you wish to augment existing templates, look inside the `src/games/` folder where each game is cleanly siloed in its own architectural slice `index.jsx`.
+Create a production build with:
+
+```bash
+npm run build
+```
+
+Game implementations live under `src/games/`. Follow the existing component patterns and update the relevant game metadata or routing when adding a game.
 
 ## Deployment
 
-The project can be instantly built and published to `gh-pages`:
+GameVault can be deployed to GitHub Pages using the GitHub Actions workflow in `.github/workflows/deploy.yml`.
 
-```bash
-npm run deploy
-```
+1. Open **Settings → Pages** in the repository.
+2. Set the build and deployment source to **GitHub Actions**.
+3. Push to `main` to trigger deployment, or run the workflow manually from the Actions tab.
 
-The script will handle outputting production minified bundles via Vite and distributing them directly to the `gh-pages` configuration without manual syncing.
+## Contributing
+
+Contributions are welcome. Start with the [contribution guide](CONTRIBUTING.md), browse [open issues](https://github.com/Aaqibhafeezkhan/GameVault/issues), and check for the `good first issue`, `help wanted`, or `up-for-grabs` labels.
+
+Please follow the [Code of Conduct](CODE_OF_CONDUCT.md). To report a security concern, see [SECURITY.md](SECURITY.md).
+
+## License
+
+GameVault is licensed under the [MIT License](LICENSE).
