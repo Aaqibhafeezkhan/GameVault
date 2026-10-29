@@ -59,21 +59,24 @@ export default function HomePage() {
 
       <SControls>
         <SSearchWrap>
-          <SSearchIcon>⌕</SSearchIcon>
+          <SSearchIcon aria-hidden="true">⌕</SSearchIcon>
           <SSearch
             id="game-search"
             type="text"
             placeholder="Search games..."
+            aria-label="Search games"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </SSearchWrap>
-        <SFilterRow>
+        <SFilterRow role="group" aria-label="Category filters">
           {CATEGORIES.map((cat) => (
             <SFilterBtn
               key={cat}
+              type="button"
               $active={category === cat}
               $color={theme.categories[cat] || theme.colors.accent}
+              aria-pressed={category === cat}
               onClick={() => setCategory(cat)}
             >
               {cat}
@@ -110,7 +113,7 @@ export default function HomePage() {
               <SCardDesc>{game.description}</SCardDesc>
               <SCardBottom>
                 <SCategoryTag $color={catColor}>{game.category}</SCategoryTag>
-                <SPlayHint>Play <span>→</span></SPlayHint>
+                <SPlayHint>Play <span aria-hidden="true">→</span></SPlayHint>
                 {best > 0 && <SBestScore>BEST {best}</SBestScore>}
               </SCardBottom>
             </SCard>
@@ -212,7 +215,7 @@ const SSearchWrap = styled.div`
   transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
   &:focus-within {
     border-color: ${theme.colors.accent};
-    box-shadow: 0 0 0 3px rgba(101, 88, 211, 0.1);
+    box-shadow: 0 0 0 3px rgba(101, 88, 211, 0.2);
   }
 `;
 
@@ -230,8 +233,13 @@ const SSearch = styled.input`
   padding: ${theme.space[3]}px 0;
   font-size: 0.95rem;
   outline: none;
+
   &::placeholder {
     color: ${theme.colors.textMuted};
+  }
+
+  &:focus-visible {
+    outline: none;
   }
 `;
 
@@ -253,11 +261,18 @@ const SFilterBtn = styled.button`
   font-family: ${theme.font.mono};
   font-size: 0.68rem;
   font-weight: 600;
+  cursor: pointer;
   transition: transform 150ms ease-out, background 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out;
+
   &:hover {
     border-color: ${(props) => props.$color};
     color: ${(props) => props.$color};
     transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${(props) => props.$color || theme.colors.accent};
+    outline-offset: 2px;
   }
 `;
 
@@ -280,8 +295,18 @@ const SClear = styled.button`
   color: ${theme.colors.accent};
   font-size: 0.72rem;
   font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
   &:hover {
     text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.accent};
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 `;
 
@@ -316,10 +341,16 @@ const SCard = styled.article`
   text-decoration: none;
   box-shadow: ${theme.shadows.card};
   transition: transform 160ms ease-out, box-shadow 160ms ease-out, border-color 160ms ease-out;
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: ${theme.shadows.cardHover};
     border-color: ${(props) => `${props.$color}55`};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${(props) => props.$color};
+    outline-offset: 2px;
   }
 `;
 
@@ -381,7 +412,7 @@ const SPlayHint = styled.span`
   opacity: 0;
   transform: translateX(-4px);
   transition: opacity 150ms ease-out, transform 150ms ease-out;
-  ${SCard}:hover & {
+  ${SCard}:hover &, ${SCard}:focus-visible & {
     opacity: 1;
     transform: translateX(0);
   }

@@ -65,24 +65,33 @@ export default function GameShell({ title, children }) {
               <SMetaValue>{best}</SMetaValue>
             </SMetaItem>
           </SMetaRow>
-          <SControls>
+          <SControls role="group" aria-label="Game controls">
             <SIconBtn
+              type="button"
               title={soundEnabled ? "Mute" : "Unmute"}
+              aria-label={soundEnabled ? "Mute sound" : "Unmute sound"}
               onClick={() => setSoundEnabled((e) => !e)}
             >
               {soundEnabled ? "🔊" : "🔇"}
             </SIconBtn>
             <SIconBtn
+              type="button"
               title={paused ? "Resume" : "Pause"}
+              aria-label={paused && !gameOver ? "Resume game" : "Pause game"}
               onClick={() => setPaused((p) => !p)}
               disabled={gameOver}
             >
               {paused && !gameOver ? "▶" : "⏸"}
             </SIconBtn>
-            <SIconBtn title="Restart" onClick={handleRestart}>
+            <SIconBtn
+              type="button"
+              title="Restart"
+              aria-label="Restart game"
+              onClick={handleRestart}
+            >
               ↺
             </SIconBtn>
-            <SBackBtn as={Link} to="/">
+            <SBackBtn as={Link} to="/" aria-label="Return to games catalog">
               ← Games
             </SBackBtn>
           </SControls>
@@ -90,15 +99,17 @@ export default function GameShell({ title, children }) {
         <SContent>{children}</SContent>
         {gameOver && (
           <SModalOverlay>
-            <SModal>
+            <SModal role="dialog" aria-modal="true" aria-labelledby="game-over-title">
               <SModalEyebrow>ROUND COMPLETE</SModalEyebrow>
-              <SModalTitle>Game Over</SModalTitle>
+              <SModalTitle id="game-over-title">Game Over</SModalTitle>
               <SModalScore>{score}</SModalScore>
               <SModalLabel>SCORE</SModalLabel>
               {score >= best && score > 0 && <SNewBest>NEW BEST!</SNewBest>}
               <SModalBest>Best: {best}</SModalBest>
               <SModalActions>
-                <SModalBtn onClick={handleRestart}>Play Again</SModalBtn>
+                <SModalBtn type="button" onClick={handleRestart}>
+                  Play Again
+                </SModalBtn>
                 <SModalBtn as={Link} to="/" $secondary>
                   Games
                 </SModalBtn>
@@ -107,10 +118,16 @@ export default function GameShell({ title, children }) {
           </SModalOverlay>
         )}
         {paused && !gameOver && (
-          <SPausedOverlay onClick={() => setPaused(false)}>
+          <SPausedOverlay 
+            role="button" 
+            tabIndex={0} 
+            aria-label="Paused. Click or press enter to resume"
+            onClick={() => setPaused(false)}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setPaused(false); }}
+          >
             <SPausedCard>
               <SPausedTitle>Paused</SPausedTitle>
-              <SPausedText>Click anywhere to continue</SPausedText>
+              <SPausedText>Click or press any key to continue</SPausedText>
             </SPausedCard>
           </SPausedOverlay>
         )}
@@ -191,13 +208,21 @@ const SIconBtn = styled.button`
   align-items: center;
   justify-content: center;
   font-size: 0.85rem;
+  cursor: pointer;
   transition: transform 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, background 150ms ease-out;
+
   &:hover:not(:disabled) {
     transform: translateY(-1px);
     border-color: ${theme.colors.accent};
     color: ${theme.colors.accent};
     background: ${theme.colors.surface};
   }
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.accent};
+    outline-offset: 2px;
+  }
+
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
@@ -217,12 +242,19 @@ const SBackBtn = styled.button`
   display: flex;
   align-items: center;
   gap: ${theme.space[1]}px;
+  cursor: pointer;
   transition: border-color 150ms ease-out, color 150ms ease-out, background 150ms ease-out;
   text-decoration: none;
+
   &:hover {
     border-color: ${theme.colors.accent};
     color: ${theme.colors.accent};
     background: ${theme.colors.surface};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.accent};
+    outline-offset: 2px;
   }
 `;
 
@@ -327,10 +359,16 @@ const SModalBtn = styled.button`
   display: inline-flex;
   align-items: center;
   transition: transform 150ms ease-out, background 150ms ease-out;
+
   &:hover {
     transform: translateY(-1px);
     background: ${(props) =>
       props.$secondary ? theme.colors.surfaceAlt : "#5749c2"};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.accent};
+    outline-offset: 2px;
   }
 `;
 
@@ -342,8 +380,13 @@ const SPausedOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: ${MODAL_OVERLAY_Z - 1};
+  z-index: ${MODAL_OVERLAY_Z};
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.accent};
+    outline-offset: -2px;
+  }
 `;
 
 const SPausedCard = styled.div`
