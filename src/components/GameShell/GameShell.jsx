@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { theme } from "../../styles/theme";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { bestScoreKey, toSafeBest } from "../../utils/bestScore";
 
 const GameShellContext = createContext(null);
 
@@ -17,7 +18,8 @@ export default function GameShell({ title, children }) {
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [best, setBest] = useLocalStorage(`gv_best_${title}`, 0);
+  const [storedBest, setBest] = useLocalStorage(bestScoreKey(title), 0);
+  const best = toSafeBest(storedBest);
 
   const handleSetScore = useCallback(
     (val) => {
